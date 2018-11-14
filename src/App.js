@@ -9,7 +9,7 @@ function generateRandom(players, difficulty) {
   let num = 0;
 
   for (let i = 0; i < players; i++) {
-    num += (Math.random() < difficulty);
+    num += (Math.random() > difficulty);
     num *= 2;
   }
   return num / 2;
