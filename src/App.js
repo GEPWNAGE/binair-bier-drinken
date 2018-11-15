@@ -26,10 +26,11 @@ class Beer extends Component {
   render() {
     let height = 36 - 32 * this.props.show;
     let rect = 'rect(' + height + 'vmin, 40vmin, 40vmin, 0)';
+    let spin = this.props.spin ? ' spin-img' : '';
     return (
-      <div className="beer-parent">
-        <img src={outline} alt='Beer' className="beer outline"/>
-        <img src={beer} alt='Beer' className="beer inside"
+      <div className={"beer-parent"}>
+        <img src={outline} alt='Beer' className={"beer outline" + spin}/>
+        <img src={beer} alt='Beer' className={"beer inside" + spin}
           style={{'clip': rect}}/>
       </div>
     )
@@ -55,7 +56,8 @@ class App extends Component {
       num: 0,
       players: 4,
       difficulty: 50,
-      finished: false
+      finished: false,
+      spin: false
     }
   }
   handleStart() {
@@ -102,18 +104,26 @@ class App extends Component {
       this.setState({difficulty: this.state.difficulty - 5});
     }
   }
+  handleTurn() {
+    this.setState({spin: true});
+    setTimeout(() => {
+      this.setState({spin: false});
+      this.initTurn();
+    }, 15000);
+  }
+  initTurn() {
+    setTimeout(() => this.handleTurn(), Math.random() * 200000);
+  }
+  componentDidMount() {
+    this.initTurn();
+  }
   render() {
     let num = Math.round(this.state.time);
-    let data = [];
-    for (let i = 0; i < 100; i++) {
-      data.push(generateRandom(4, 50));
-    }
-    console.log(data);
     return (
       <div className="App">
         <header className="App-header">
           <div className="beer-container">
-            <Beer show={this.state.time / Math.pow(2, this.state.players)}/>
+            <Beer show={this.state.time / Math.pow(2, this.state.players)} spin={this.state.spin}/>
             <Counter num={num} finished={this.state.finished}/>
           </div>
           <div className='ui' style={{opacity: this.state.running ? 0 : 1}}>
