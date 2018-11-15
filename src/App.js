@@ -24,7 +24,7 @@ class Counter extends Component {
 
 class Beer extends Component {
   render() {
-    let height = 40 - 40 * this.props.show;
+    let height = 36 - 32 * this.props.show;
     let rect = 'rect(' + height + 'vmin, 40vmin, 40vmin, 0)';
     return (
       <div className="beer-parent">
@@ -69,12 +69,13 @@ class App extends Component {
     });
   }
   tick() {
-    if (this.state.time - this.state.num <= 0.001) {
+    if (this.state.time - this.state.num <= 0.1) {
       this.setState({running: false, finished: true});
       clearInterval(this.timerHandle);
     }
 
     let newTime = this.state.time - (Math.pow(2, this.state.players) / 1000);
+    newTime = Math.max(this.state.num, newTime);
     this.setState({time: newTime});
   }
   handleIncreasePlayers() {
@@ -93,21 +94,26 @@ class App extends Component {
   }
   handleIncreaseDiff() {
     if (this.state.difficulty <= 99) {
-      this.setState({difficulty: this.state.difficulty + 1});
+      this.setState({difficulty: this.state.difficulty + 5});
     }
   }
   handleDecreaseDiff() {
     if (this.state.difficulty >= 2) {
-      this.setState({difficulty: this.state.difficulty - 1});
+      this.setState({difficulty: this.state.difficulty - 5});
     }
   }
   render() {
     let num = Math.round(this.state.time);
+    let data = [];
+    for (let i = 0; i < 100; i++) {
+      data.push(generateRandom(4, 50));
+    }
+    console.log(data);
     return (
       <div className="App">
         <header className="App-header">
           <div className="beer-container">
-            <Beer show={1}/>
+            <Beer show={this.state.time / Math.pow(2, this.state.players)}/>
             <Counter num={num} finished={this.state.finished}/>
           </div>
           <div className='ui' style={{opacity: this.state.running ? 0 : 1}}>
