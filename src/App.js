@@ -74,7 +74,7 @@ class App extends Component {
       clearInterval(this.timerHandle);
     }
 
-    let newTime = this.state.time - 0.02;
+    let newTime = this.state.time - (Math.pow(2, this.state.players) / 1000);
     this.setState({time: newTime});
   }
   handleIncreasePlayers() {
@@ -103,21 +103,6 @@ class App extends Component {
   }
   render() {
     let num = Math.round(this.state.time);
-    if (this.state.running) {
-      return (
-        <div className="App">
-          <header className="App-header">
-            <div className="beer-container">
-              <Beer show={this.state.time / Math.pow(2, this.state.players)}/>
-              <Counter num={num} finished={this.state.finished}/>
-            </div>
-            <p>
-              Binair bier drinken!
-            </p>
-          </header>
-        </div>
-      );
-    }
     return (
       <div className="App">
         <header className="App-header">
@@ -125,24 +110,23 @@ class App extends Component {
             <Beer show={1}/>
             <Counter num={num} finished={this.state.finished}/>
           </div>
-          <p>
-            Binair bier drinken!
-          </p>
-          <p>
-            Players:
-            <button onClick={this.handleDecreasePlayers}>-</button>
-            {this.state.players}
-            <button onClick={this.handleIncreasePlayers}>+</button>
-          </p>
-          <p>
-            Difficulty:
-            <button onClick={this.handleDecreaseDiff}>-</button>
-            {this.state.difficulty}
-            <button onClick={this.handleIncreaseDiff}>+</button>
-          </p>
-          <p>
-            <button onClick={this.handleStart}>Start</button>
-          </p>
+          <div className='ui' style={{opacity: this.state.running ? 0 : 1}}>
+            <p>
+              Players:
+              <button onClick={this.handleDecreasePlayers}>-</button>
+              {this.state.players}
+              <button onClick={this.handleIncreasePlayers}>+</button>
+            </p>
+            <p>
+              Difficulty:
+              <button onClick={this.handleDecreaseDiff}>-</button>
+              {this.state.difficulty}
+              <button onClick={this.handleIncreaseDiff}>+</button>
+            </p>
+            <p>
+              <button onClick={this.handleStart}>Start</button>
+            </p>
+          </div>
         </header>
       </div>
     );
