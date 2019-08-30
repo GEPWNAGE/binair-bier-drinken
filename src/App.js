@@ -106,7 +106,7 @@ class App extends Component {
             <Counter num={num} finished={this.state.finished}/>
           </div>
           <Controls
-            display={this.state.running}
+            display={!this.state.running}
             onChangePlayers={this.handleChangePlayers}
             onStart={this.handleStart}/>
         </header>

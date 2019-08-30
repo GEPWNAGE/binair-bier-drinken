@@ -20,7 +20,7 @@ const Controls = props => {
     }
 
     return (
-        <div className='ui' style={{opacity: props.display ? 0 : 1}}>
+        <div className='ui' style={{opacity: props.display ? 1 : 0}}>
           <p>
             Players:
             <button onClick={() => changePlayers(players - 1)}>-</button>

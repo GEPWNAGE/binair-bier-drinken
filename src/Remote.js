@@ -1,14 +1,8 @@
 import React, { useEffect } from 'react';
+import Controls from './Controls';
 
 let ws = null;
 
-const Start = props => {
-    return <button onClick={props.onStart}>test</button>
-}
-
-const Players = props => {
-    return <button onClick={props.onPlayers}>players</button>
-}
 
 const Remote = props => {
     console.log(props.match.params.handle);
@@ -28,8 +22,10 @@ const Remote = props => {
 
     return (
         <div>
-          <Start onStart={() => ws.send("START 4 50")}/>
-          <Players onPlayers={() => ws.send("PLAYERS 5")}/>
+          <Controls
+            display={true}
+            onChangePlayers={players => ws.send("PLAYERS " + players)}
+            onStart={(players, difficulty) => ws.send("START " + players + " " + difficulty)}/>
         </div>
     );
 }
