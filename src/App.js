@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.scss';
+import Controls from './Controls';
 import outline from './logo_beer_no_inside.svg'
 import beer from './logo_beer_nosides.svg'
 
@@ -43,10 +44,7 @@ class App extends Component {
 
     this.handleStart = this.handleStart.bind(this);
     this.tick = this.tick.bind(this);
-    this.handleDecreasePlayers = this.handleDecreasePlayers.bind(this);
-    this.handleIncreasePlayers = this.handleIncreasePlayers.bind(this);
-    this.handleDecreaseDiff = this.handleDecreaseDiff.bind(this);
-    this.handleIncreaseDiff = this.handleIncreaseDiff.bind(this);
+    this.handleChangePlayers = this.handleChangePlayers.bind(this);
 
     this.timerHandle = null;
 
@@ -55,17 +53,16 @@ class App extends Component {
       time: 16,
       num: 0,
       players: 4,
-      difficulty: 50,
       finished: false,
       spin: false
     }
   }
-  handleStart() {
+  handleStart(players, difficulty) {
     this.timerHandle = setInterval(this.tick, 20);
-    let num = generateRandom(this.state.players, this.state.difficulty);
+    let num = generateRandom(players, difficulty);
     this.setState({
       running: true,
-      time: Math.pow(2, this.state.players),
+      time: Math.pow(2, players),
       num: num,
       finished: false
     });
@@ -80,29 +77,11 @@ class App extends Component {
     newTime = Math.max(this.state.num, newTime);
     this.setState({time: newTime});
   }
-  handleIncreasePlayers() {
+  handleChangePlayers(players) {
     this.setState({
-      players: this.state.players + 1,
-      time: Math.pow(2, this.state.players + 1)
+      players: players,
+      time: Math.pow(2, players)
     });
-  }
-  handleDecreasePlayers() {
-    if (this.state.players >= 2) {
-      this.setState({
-        players: this.state.players - 1,
-        time: Math.pow(2, this.state.players - 1)
-      });
-    }
-  }
-  handleIncreaseDiff() {
-    if (this.state.difficulty <= 99) {
-      this.setState({difficulty: this.state.difficulty + 5});
-    }
-  }
-  handleDecreaseDiff() {
-    if (this.state.difficulty >= 2) {
-      this.setState({difficulty: this.state.difficulty - 5});
-    }
   }
   handleTurn() {
     this.setState({spin: true});
@@ -126,23 +105,10 @@ class App extends Component {
             <Beer show={this.state.time / Math.pow(2, this.state.players)} spin={this.state.spin}/>
             <Counter num={num} finished={this.state.finished}/>
           </div>
-          <div className='ui' style={{opacity: this.state.running ? 0 : 1}}>
-            <p>
-              Players:
-              <button onClick={this.handleDecreasePlayers}>-</button>
-              {this.state.players}
-              <button onClick={this.handleIncreasePlayers}>+</button>
-            </p>
-            <p>
-              Difficulty:
-              <button onClick={this.handleDecreaseDiff}>-</button>
-              {this.state.difficulty}
-              <button onClick={this.handleIncreaseDiff}>+</button>
-            </p>
-            <p>
-              <button onClick={this.handleStart}>Start</button>
-            </p>
-          </div>
+          <Controls
+            display={this.state.running}
+            onChangePlayers={this.handleChangePlayers}
+            onStart={this.handleStart}/>
         </header>
       </div>
     );
