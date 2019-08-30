@@ -1,27 +1,37 @@
 import React, { useEffect } from 'react';
 
-let started = false;
+let ws = null;
+
+const Start = props => {
+    return <button onClick={props.onStart}>test</button>
+}
+
+const Players = props => {
+    return <button onClick={props.onPlayers}>players</button>
+}
 
 const Remote = props => {
     console.log(props.match.params.handle);
 
     useEffect(() => {
-        if (started) {
+        if (ws !== null) {
             return;
         }
 
-        const ws = new WebSocket('ws://localhost:5000/remote');
-        started = true;
+        ws = new WebSocket('ws://localhost:5000/remote');
 
         //ws.onmessage(msg => console.log(msg));
         console.log(ws);
         ws.onerror = err => console.log(err);
-        ws.onopen = e => { ws.send("IDENT " + props.match.params.handle); };
+        ws.onopen = () => ws.send("IDENT " + props.match.params.handle);
     })
 
-
-
-    return <div>Empty</div>;
+    return (
+        <div>
+          <Start onStart={() => ws.send("START 4 50")}/>
+          <Players onPlayers={() => ws.send("PLAYERS 5")}/>
+        </div>
+    );
 }
 
 export default Remote;
