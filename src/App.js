@@ -110,7 +110,11 @@ class App extends Component {
       // TODO initialize connection for remote
       this.setState({useRemote: true});
 
-      this.ws = new WebSocket('ws://localhost:5000/screen');
+      let protocol = 'wss';
+      if (window.location.protocol === 'http:') {
+        protocol = 'ws';
+      }
+      this.ws = new WebSocket(protocol + '://' + window.location.host + '/screen');
 
       this.ws.onerror = err => console.log(err);
       this.ws.onopen = () => this.ws.send("GET-IDENT");
@@ -122,7 +126,7 @@ class App extends Component {
 
     switch (command[0]) {
       case 'IDENT':
-        console.log('http://localhost:3000/remote/' + command[1]);
+        console.log(window.location.protocol + '//' + window.location.host + '/remote/' + command[1]);
         break;
       case 'PLAYERS':
         this.handleChangePlayers(parseInt(command[1], 10));

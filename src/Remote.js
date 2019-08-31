@@ -40,7 +40,11 @@ const Remote = props => {
             return;
         }
 
-        ws = new WebSocket('ws://localhost:5000/remote');
+        let protocol = 'wss';
+        if (window.location.protocol === 'http:') {
+            protocol = 'ws';
+        }
+        ws = new WebSocket(protocol + '://' + window.location.host + '/remote');
 
         ws.onerror = err => console.log(err);
         ws.onopen = () => {
