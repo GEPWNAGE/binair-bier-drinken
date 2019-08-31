@@ -76,6 +76,10 @@ class App extends Component {
     if (this.state.time - this.state.num <= 0.1) {
       this.setState({running: false, finished: true});
       clearInterval(this.timerHandle);
+
+      if (this.state.useRemote) {
+        this.ws.send("FINISHED " + this.state.num);
+      }
     }
 
     let newTime = this.state.time - (Math.pow(2, this.state.players) / 1000);

@@ -14,6 +14,11 @@ const Remote = props => {
 
         ws.onerror = err => console.log(err);
         ws.onopen = () => ws.send("IDENT " + props.match.params.handle);
+
+        ws.onmessage = e => {
+            const command = e.data.split(' ');
+            console.log(command);
+        }
     })
 
     return (
