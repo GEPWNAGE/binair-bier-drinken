@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Controls from './Controls';
 
 let ws = null;
 
 
 const Remote = props => {
+    const [running, setRunning] = useState(false);
+
     useEffect(() => {
         if (ws !== null) {
             return;
@@ -13,21 +15,34 @@ const Remote = props => {
         ws = new WebSocket('ws://localhost:5000/remote');
 
         ws.onerror = err => console.log(err);
-        ws.onopen = () => ws.send("IDENT " + props.match.params.handle);
+        ws.onopen = () => {
+            ws.send("IDENT " + props.match.params.handle);
+        }
 
         ws.onmessage = e => {
             const command = e.data.split(' ');
             console.log(command);
+
+            switch (command[0]) {
+                case 'FINISHED':
+                    setRunning(false);
+                    break;
+            }
         }
-    })
+    });
+
+    const startPlaying = (players, difficulty) => {
+        ws.send("START " + players + " " + difficulty);
+        setRunning(true);
+    }
 
     return (
         <div className="App">
           <header className="App-header">
           <Controls
-            display={true}
+            display={!running}
             onChangePlayers={players => ws.send("PLAYERS " + players)}
-            onStart={(players, difficulty) => ws.send("START " + players + " " + difficulty)}/>
+            onStart={startPlaying}/>
           </header>
         </div>
     );
