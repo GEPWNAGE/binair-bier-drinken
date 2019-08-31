@@ -45,8 +45,11 @@ class App extends Component {
     this.handleStart = this.handleStart.bind(this);
     this.tick = this.tick.bind(this);
     this.handleChangePlayers = this.handleChangePlayers.bind(this);
+    this.handleKeydown = this.handleKeydown.bind(this);
+    this.handleWsMessage = this.handleWsMessage.bind(this);
 
     this.timerHandle = null;
+    this.ws = null;
 
     this.state = {
       running: false,
@@ -54,7 +57,9 @@ class App extends Component {
       num: 0,
       players: 4,
       finished: false,
-      spin: false
+      spin: false,
+      useRemote: false,
+      ident: ''
     }
   }
   handleStart(players, difficulty) {
@@ -93,8 +98,42 @@ class App extends Component {
   initTurn() {
     setTimeout(() => this.handleTurn(), Math.random() * 200000);
   }
+  handleKeydown(e) {
+    if (this.state.useRemote) {
+      return;
+    }
+    if (e.key === "r" || e.keyCode === 82) {
+      // TODO initialize connection for remote
+      this.setState({useRemote: true});
+
+      this.ws = new WebSocket('ws://localhost:5000/screen');
+
+      this.ws.onerror = err => console.log(err);
+      this.ws.onopen = () => this.ws.send("GET-IDENT");
+      this.ws.onmessage = this.handleWsMessage;
+    }
+  }
+  handleWsMessage(e) {
+    const command = e.data.split(' ');
+
+    switch (command[0]) {
+      case 'IDENT':
+        console.log('http://localhost:3000/remote/' + command[1]);
+        break;
+      case 'PLAYERS':
+        this.handleChangePlayers(parseInt(command[1], 10));
+        break;
+      case 'START':
+        this.handleStart(parseInt(command[1], 10), parseInt(command[2], 10));
+        break;
+      default:
+        console.log(command);
+        break;
+    }
+  }
   componentDidMount() {
     this.initTurn();
+    document.addEventListener('keydown', this.handleKeydown);
   }
   render() {
     let num = Math.round(this.state.time);
@@ -106,7 +145,7 @@ class App extends Component {
             <Counter num={num} finished={this.state.finished}/>
           </div>
           <Controls
-            display={!this.state.running}
+            display={!this.state.running && !this.state.useRemote}
             onChangePlayers={this.handleChangePlayers}
             onStart={this.handleStart}/>
         </header>
