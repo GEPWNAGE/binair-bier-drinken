@@ -1,0 +1,27 @@
+@import "style/_colors";
+
+.small-beer-parent {
+  position: relative;
+  top: 0;
+  left: 0;
+
+  img.outline {
+    position: relative;
+    top: 0;
+    left: 0;
+  }
+  img.inside {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
+
+img.small-beer {
+  height: 10vmin;
+}
+
+div.small-beer-container {
+  display: flex;
+  flex-direction: row;
+}

@@ -1,11 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import Controls from './Controls';
+import './Remote.scss';
+import outline from './logo_beer_no_inside.svg'
+import beer from './logo_beer_nosides.svg'
 
 let ws = null;
 
+const SmallBeer = props => {
+    return (
+        <div className="small-beer-parent">
+          <img src={outline} alt='Beer' className={"small-beer outline"}/>
+          <img src={beer} alt='Beer' className={"small-beer inside"}
+               style={{opacity: props.display ? 1 : 0}}/>
+        </div>
+    );
+};
+
+const ResultDisplay = props => {
+    const curResult = Math.min(props.result, Math.pow(2, props.players) - 1);
+    const result = curResult.toString(2).padStart(props.players, "0");
+
+    let key = 0;
+    const beers = result.split('').map(num => {
+        return <SmallBeer key={key++} display={num === "1"}/>
+    });
+
+    return (
+        <div className="small-beer-container">{beers}</div>
+    );
+}
 
 const Remote = props => {
     const [running, setRunning] = useState(false);
+    const [result, setResult] = useState(16);
+    const [players, setPlayers] = useState(4);
 
     useEffect(() => {
         if (ws !== null) {
@@ -25,6 +53,7 @@ const Remote = props => {
             switch (command[0]) {
                 case 'FINISHED':
                     setRunning(false);
+                    setResult(parseInt(command[1]));
                     break;
                 default:
                     console.log("Unknown command", command);
@@ -35,14 +64,22 @@ const Remote = props => {
     const startPlaying = (players, difficulty) => {
         ws.send("START " + players + " " + difficulty);
         setRunning(true);
+        setResult(Math.pow(2, players));
+    }
+
+    const changePlayers = players => {
+        ws.send("PLAYERS " + players);
+        setPlayers(players);
+        setResult(Math.pow(2, players));
     }
 
     return (
         <div className="App">
           <header className="App-header">
+          <ResultDisplay players={players} result={result}/>
           <Controls
             display={!running}
-            onChangePlayers={players => ws.send("PLAYERS " + players)}
+            onChangePlayers={changePlayers}
             onStart={startPlaying}/>
           </header>
         </div>
