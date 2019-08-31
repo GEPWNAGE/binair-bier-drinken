@@ -42,25 +42,6 @@ div.beer-container {
   }
 }
 
-button {
-  font-size: 4vmin;
-  min-width: 2em;
-  height: 2em;
-
-  padding: 0 0.6em;
-
-  background-color: lighten($blue, 32%);
-  border: 0;
-  color: $white;
-  margin: 0 0.5em;
-  font: inherit;
-  font-weight: bold;
-
-  &:active {
-    background-color: lighten($blue, 42%);
-  }
-}
-
 .spin-img {
   animation: logo-spin infinite 15s ease;
 }

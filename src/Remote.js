@@ -21,11 +21,13 @@ const Remote = props => {
     })
 
     return (
-        <div>
+        <div className="App">
+          <header className="App-header">
           <Controls
             display={true}
             onChangePlayers={players => ws.send("PLAYERS " + players)}
             onStart={(players, difficulty) => ws.send("START " + players + " " + difficulty)}/>
+          </header>
         </div>
     );
 }

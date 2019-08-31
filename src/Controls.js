@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Controls.scss';
 
 const Controls = props => {
     const [players, setPlayers] = useState(4);
