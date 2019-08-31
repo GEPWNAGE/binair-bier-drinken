@@ -21,12 +21,13 @@ const Remote = props => {
 
         ws.onmessage = e => {
             const command = e.data.split(' ');
-            console.log(command);
 
             switch (command[0]) {
                 case 'FINISHED':
                     setRunning(false);
                     break;
+                default:
+                    console.log("Unknown command", command);
             }
         }
     });
