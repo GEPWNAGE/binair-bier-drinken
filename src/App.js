@@ -60,7 +60,8 @@ class App extends Component {
       finished: false,
       spin: false,
       useRemote: false,
-      ident: ''
+      ident: '',
+      remoteConnected: false
     }
   }
   handleStart(players, difficulty) {
@@ -136,6 +137,8 @@ class App extends Component {
       case 'START':
         this.handleStart(parseInt(command[1], 10), parseInt(command[2], 10));
         break;
+      case 'REMOTE-CONNECTED':
+        this.setState({remoteConnected: true});
       default:
         console.log(command);
         break;
@@ -148,11 +151,16 @@ class App extends Component {
   render() {
     let num = Math.round(this.state.time);
     let qr = "";
-    if (this.state.ident !== "") {
-      qr = <QRCode
-             value={window.location.protocol + '//' + window.location.host + '/remote/' + this.state.ident}
-             size={256}
-             includeMargin={true}/>;
+    if (this.state.ident !== "" && !this.state.remoteConnected) {
+      const url = window.location.protocol + '//' + window.location.host + '/remote/' + this.state.ident;
+      qr = (
+        <a href={url} target="_blank">
+          <QRCode
+            value={url}
+            size={512}
+            includeMargin={true}/>
+        </a>
+      );
     }
     return (
       <div className="App">
