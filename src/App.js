@@ -121,6 +121,15 @@ class App extends Component {
       this.ws.onerror = err => console.log(err);
       this.ws.onopen = () => this.ws.send("GET-IDENT");
       this.ws.onmessage = this.handleWsMessage;
+
+      // reconnect automatically when disconnected, with same ident
+      setInterval(() => {
+        if (this.ws.readyState > 1) {
+          this.ws = new WebSocket(protocol + '://' + window.location.host + '/screen');
+          this.ws.onopen = () => this.ws.send("SET-IDENT " + this.state.ident);
+          this.ws.onmessage = this.handleWsMessage;
+        }
+      }, 2000);
     }
   }
   handleWsMessage(e) {
@@ -129,6 +138,7 @@ class App extends Component {
     switch (command[0]) {
       case 'IDENT':
         this.setState({ident: command[1]});
+        this.ws.send("PING");
         break;
       case 'PLAYERS':
         this.handleChangePlayers(parseInt(command[1], 10));
@@ -138,6 +148,9 @@ class App extends Component {
         break;
       case 'REMOTE-CONNECTED':
         this.setState({remoteConnected: true});
+        break;
+      case 'PONG':
+        setTimeout(() => this.ws.send('PING'), 15000);
         break;
       default:
         console.log(command);

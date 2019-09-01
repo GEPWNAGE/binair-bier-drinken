@@ -69,7 +69,14 @@ const Remote = props => {
                     setResult(parseInt(command[1]));
                     break;
                 case 'IDENT-FAIL':
+                    console.log(command[1]);
                     setFailed(true);
+                    break;
+                case 'IDENT-SUCCESS':
+                    ws.send('PING');
+                    break;
+                case 'PONG':
+                    setTimeout(() => ws.send('PING'), 15000);
                     break;
                 default:
                     console.log("Unknown command", command);
