@@ -34,6 +34,8 @@ const Remote = props => {
     const [running, setRunning] = useState(false);
     const [result, setResult] = useState(16);
     const [players, setPlayers] = useState(4);
+    const [readyState, setReadyState] = useState(-1);
+    const [failed, setFailed] = useState(false);
 
     useEffect(() => {
         if (ws !== null) {
@@ -45,6 +47,13 @@ const Remote = props => {
             protocol = 'ws';
         }
         ws = new WebSocket(protocol + '://' + window.location.host + '/remote');
+
+        // check websocket ready state every 0.5 seconds
+        setInterval(() => {
+            if (ws.readyState !== readyState) {
+                setReadyState(ws.readyState);
+            }
+        }, 500);
 
         ws.onerror = err => console.log(err);
         ws.onopen = () => {
@@ -59,11 +68,14 @@ const Remote = props => {
                     setRunning(false);
                     setResult(parseInt(command[1]));
                     break;
+                case 'IDENT-FAIL':
+                    setFailed(true);
+                    break;
                 default:
                     console.log("Unknown command", command);
             }
         }
-    });
+    }, [readyState, props.match.params.handle]);
 
     const startPlaying = (players, difficulty) => {
         ws.send("START " + players + " " + difficulty);
@@ -75,6 +87,39 @@ const Remote = props => {
         ws.send("PLAYERS " + players);
         setPlayers(players);
         setResult(Math.pow(2, players));
+    }
+
+    if (readyState < 1) {
+        return (
+            <div className="Remote">
+              <header className="Remote-header">Waiting for connection...</header>
+            </div>
+        );
+    }
+    if (failed) {
+        return (
+            <div className="Remote">
+              <header className="Remote-header">
+                <p>
+                  Invalid ident. Connection failed.
+                </p>
+              </header>
+            </div>
+        );
+    }
+    if (readyState !== 1) {
+        return (
+            <div className="Remote">
+              <header className="Remote-header">
+                <p>
+                  Disconnected
+                </p>
+                <p>
+                  Please <button className="link" onClick={() => window.location.reload()}>refresh</button> to reconnect.
+                </p>
+              </header>
+            </div>
+        );
     }
 
     return (
