@@ -68,6 +68,7 @@ class App extends Component {
     this.setState({
       running: true,
       time: Math.pow(2, players),
+      players: players,
       num: num,
       finished: false
     });
