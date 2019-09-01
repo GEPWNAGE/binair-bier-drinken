@@ -110,7 +110,6 @@ class App extends Component {
       return;
     }
     if (e.key === "r" || e.keyCode === 82) {
-      // TODO initialize connection for remote
       this.setState({useRemote: true});
 
       let protocol = 'wss';
@@ -139,6 +138,7 @@ class App extends Component {
         break;
       case 'REMOTE-CONNECTED':
         this.setState({remoteConnected: true});
+        break;
       default:
         console.log(command);
         break;
@@ -154,7 +154,7 @@ class App extends Component {
     if (this.state.ident !== "" && !this.state.remoteConnected) {
       const url = window.location.protocol + '//' + window.location.host + '/remote/' + this.state.ident;
       qr = (
-        <a href={url} target="_blank">
+        <a href={url} target="_blank" rel="noopener noreferrer">
           <QRCode
             value={url}
             size={512}

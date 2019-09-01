@@ -8,9 +8,9 @@ let ws = null;
 
 const SmallBeer = props => {
     return (
-        <div className="small-beer-parent">
-          <img src={outline} alt='Beer' className={"small-beer outline"}/>
-          <img src={beer} alt='Beer' className={"small-beer inside"}
+        <div className="result-beer-parent">
+          <img src={outline} alt='Beer' className={"result-beer outline"}/>
+          <img src={beer} alt='Beer' className={"result-beer inside"}
                style={{opacity: props.display ? 1 : 0}}/>
         </div>
     );
@@ -26,7 +26,7 @@ const ResultDisplay = props => {
     });
 
     return (
-        <div className="small-beer-container">{beers}</div>
+        <div className="result-container">{beers}</div>
     );
 }
 
@@ -78,8 +78,8 @@ const Remote = props => {
     }
 
     return (
-        <div className="App">
-          <header className="App-header">
+        <div className="Remote">
+          <header className="Remote-header">
           <ResultDisplay players={players} result={result}/>
           <Controls
             display={!running}
