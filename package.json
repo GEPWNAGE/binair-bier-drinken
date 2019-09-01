@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "node-sass": "^4.10.0",
+    "qrcode.react": "^0.9.3",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
     "react-router-dom": "^5.0.1",

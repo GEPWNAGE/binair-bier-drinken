@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import './App.scss';
 import Controls from './Controls';
-import outline from './logo_beer_no_inside.svg'
-import beer from './logo_beer_nosides.svg'
+import outline from './logo_beer_no_inside.svg';
+import beer from './logo_beer_nosides.svg';
+import QRCode from 'qrcode.react';
 
 function generateRandom(players, difficulty) {
   difficulty = difficulty / 100;
@@ -127,7 +128,7 @@ class App extends Component {
 
     switch (command[0]) {
       case 'IDENT':
-        console.log(window.location.protocol + '//' + window.location.host + '/remote/' + command[1]);
+        this.setState({ident: command[1]});
         break;
       case 'PLAYERS':
         this.handleChangePlayers(parseInt(command[1], 10));
@@ -146,6 +147,13 @@ class App extends Component {
   }
   render() {
     let num = Math.round(this.state.time);
+    let qr = "";
+    if (this.state.ident !== "") {
+      qr = <QRCode
+             value={window.location.protocol + '//' + window.location.host + '/remote/' + this.state.ident}
+             size={256}
+             includeMargin={true}/>;
+    }
     return (
       <div className="App">
         <header className="App-header">
@@ -153,6 +161,7 @@ class App extends Component {
             <Beer show={this.state.time / Math.pow(2, this.state.players)} spin={this.state.spin}/>
             <Counter num={num} finished={this.state.finished}/>
           </div>
+          {qr}
           <Controls
             display={!this.state.running && !this.state.useRemote}
             onChangePlayers={this.handleChangePlayers}
