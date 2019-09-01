@@ -11,4 +11,6 @@ RUN cd binair-bier-drinken-ws && yarn
 
 COPY prod.env binair-bier-drinken-ws/.env
 
-CMD ["sh"]
+WORKDIR /usr/src/app/binair-bier-drinken-ws/
+
+CMD ["yarn", "start"]
