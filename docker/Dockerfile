@@ -13,4 +13,6 @@ COPY prod.env binair-bier-drinken-ws/.env
 
 WORKDIR /usr/src/app/binair-bier-drinken-ws/
 
+EXPOSE 5000
+
 CMD ["yarn", "start"]
